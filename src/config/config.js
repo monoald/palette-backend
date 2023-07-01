@@ -1,7 +1,9 @@
-module.exports = {
-  DB: {
-    URI: 'mongodb+srv://monoald:6866449Ca.@palette-test.o0tdlcm.mongodb.net/',
-    USER: 'monoald',
-    PASSWORD: '6866449Ca.'
-  }
+require('dotenv').config()
+
+const config = {
+  PORT: process.env.PORT || 3000,
+  DB_URI: process.env.DB_URI,
+  SECRET: process.env.JWT_SECRET,
 }
+
+module.exports = config

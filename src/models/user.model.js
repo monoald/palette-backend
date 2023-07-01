@@ -12,6 +12,19 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  username: {
+    type: String,
+    required: true
+  }
+})
+
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.password
   }
 })
 

@@ -2,6 +2,8 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 
+const config = require('./config/config')
+
 const { errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
 const routerApi = require('./routes')
 
@@ -11,7 +13,7 @@ require('./database')
 const app = express()
 
 // settings
-app.set('port', process.env.PORT || 3000)
+app.set('port', config.PORT)
 
 // middlewares
 app.use(morgan('dev'))
