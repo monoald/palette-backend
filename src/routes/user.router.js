@@ -10,18 +10,18 @@ router.get('/',
   getUsers
 )
 
-router.get('/:email',
+router.get('/:id',
   validatorHandler(getUserSchema, 'params'),
   getUser
 )
 
-router.patch('/:email',
+router.patch('/:id',
   validatorHandler(getUserSchema, 'params'),
   validatorHandler(updateUserSchema, 'body'),
   updateUser
 )
 
-router.delete('/:email',
+router.delete('/:id',
   validatorHandler(getUserSchema, 'params'),
   deleteUser
 )

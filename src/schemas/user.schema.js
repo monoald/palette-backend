@@ -3,6 +3,7 @@ const Joi = require('joi')
 const email = Joi.string().email()
 const password = Joi.string().min(8)
 const username = Joi.string().min(3).max(10)
+const id = Joi.string()
 
 const createUserSchema = Joi.object({
   email: email.required(),
@@ -16,7 +17,7 @@ const updateUserSchema = Joi.object({
 })
 
 const getUserSchema = Joi.object({
-  email: email.required(),
+  id: id.required(),
 })
 
 const signInSchema = Joi.object({

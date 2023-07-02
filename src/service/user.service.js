@@ -1,5 +1,4 @@
 const User = require('../models/user.model')
-const mongoose = require('mongoose')
 const boom = require('@hapi/boom')
 const config = require('../config/config')
 const bcrypt = require('bcrypt')
@@ -19,7 +18,6 @@ class UserService {
     }
 
     newUser.save()
-      .then(() => { mongoose.connection.close() })
 
     return newUser
   }
@@ -30,8 +28,8 @@ class UserService {
     return users
   }
 
-  async findOne(email) {
-    const user = await User.findOne({ email })
+  async findOne(id) {
+    const user = await User.findById(id)
 
     if (user === null) {
       throw boom.notFound(`User not found.`)
@@ -40,8 +38,8 @@ class UserService {
     return user
   }
 
-  async update(email, data) {
-    const user = await User.findOneAndUpdate({ email }, data)
+  async update(id, data) {
+    const user = await User.findOneAndUpdate({ id }, data)
 
     if (user === null) {
       throw boom.notFound(`User not found.`)
@@ -50,8 +48,8 @@ class UserService {
     return user
   }
 
-  async delete(email) {
-    const user = await User.findOneAndDelete({ email })
+  async delete(id) {
+    const user = await User.findOneAndDelete({ id })
 
     if (user === null) {
       throw boom.notFound(`User not found.`)
@@ -61,7 +59,7 @@ class UserService {
   }
 
   async signIn({ email, password }) {
-    const user = await this.findOne(email)
+    const user = await User.findOne({ email })
 
     const correctPassword = user === null
       ? false

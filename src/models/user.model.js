@@ -16,7 +16,11 @@ const userSchema = new Schema({
   username: {
     type: String,
     required: true
-  }
+  },
+  palettes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Palette'
+  }]
 })
 
 userSchema.set('toJSON', {
@@ -38,10 +42,6 @@ userSchema.pre('save', async function (next) {
   user.password = hash
   next()
 })
-
-userSchema.methods.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.password)
-}
 
 const User = model('User', userSchema)
 
