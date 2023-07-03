@@ -31,8 +31,8 @@ const getUsers = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const { email } = req.params
-    const user = await service.findOne(email)
+    const { id } = req.params
+    const user = await service.findOne(id)
     res.json(user)
   } catch (error) {
     next(error)

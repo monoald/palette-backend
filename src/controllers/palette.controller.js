@@ -4,7 +4,10 @@ const service = new PaletteService
 
 const createPalette = async (req, res, next) => {
   try {
-    const newPalette = await service.create(req.body)
+    const { colors } = req.body
+    const { userId } = req
+
+    const newPalette = await service.create({ colors, userId })
     res.status(201).json(newPalette)
   } catch (error) {
     next(error)
@@ -32,7 +35,10 @@ const getPalette = async (req, res, next) => {
 
 const savePalette = async (req, res, next) => {
   try {
-    const palette = await service.save(req.body)
+    const { colors } = req.body
+    const { userId } = req
+
+    const palette = await service.save({ colors, userId })
     res.json(palette)
   } catch (error) {
     next(error)
@@ -40,8 +46,11 @@ const savePalette = async (req, res, next) => {
 }
 
 const unsavePalette = async (req, res, next) => {
+  const { id } = req.body
+  const { userId } = req
+
   try {
-    const palette = await service.unsave(req.body)
+    const palette = await service.unsave({ id, userId })
     res.json(palette)
   } catch (error) {
     next(error)

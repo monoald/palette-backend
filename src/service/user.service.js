@@ -23,13 +23,23 @@ class UserService {
   }
 
   async find() {
-    const users = await User.find({})
+    const users = await User.find({}).populate('palettes', {
+      'colors': 1,
+      'length': 1,
+      'savedCount': 1,
+      '_id': 0
+    })
 
     return users
   }
 
   async findOne(id) {
-    const user = await User.findById(id)
+    const user = await User.findById(id).populate('palettes', {
+      'colors': 1,
+      'length': 1,
+      'savedCount': 1,
+      '_id': 0
+    })
 
     if (user === null) {
       throw boom.notFound(`User not found.`)
@@ -78,6 +88,7 @@ class UserService {
 
     return {
       email: user.email,
+      username: user.username,
       token
     }
   }

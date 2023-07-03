@@ -45,7 +45,6 @@ class UserService {
 
   async save({colors, userId}) {
     const palette = await Palette.findOne({ colors })
-
     if (!palette) {
       const newPalette = await this.create({ colors, userId })
 
@@ -80,30 +79,6 @@ class UserService {
     palette.save()
 
     return palette
-  }
-
-  async signIn({ email, password }) {
-    const user = await this.findOne(email)
-
-    const correctPassword = user === null
-      ? false
-      : await bcrypt.compare(password, user.password)
-
-    if (!(user && correctPassword)) {
-      throw boom.unauthorized('Invalid email or password.')
-    }
-
-    const userForToken = {
-      id: user._id,
-      email: user.email
-    }
-
-    const token = jwt.sign(userForToken, config.SECRET)
-
-    return {
-      email: user.email,
-      token
-    }
   }
 }
 
