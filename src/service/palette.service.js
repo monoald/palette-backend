@@ -27,8 +27,13 @@ class UserService {
     return newPalette
   }
 
-  async find() {
+  async find(page) {
+    const limit = 2
+    const offset = (page - 1) * limit
     const palettes = await Palette.find({})
+      .sort({ savedCount: -1 })
+      .limit(limit)
+      .skip(offset)
 
     return palettes
   }
