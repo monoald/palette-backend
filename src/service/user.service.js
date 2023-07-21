@@ -8,18 +8,23 @@ class UserService {
   constructor() {}
 
   async create(data) {
-    const newUser = new User(data)
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(data.password, salt)
 
-    const email = data.email
-    const user = await User.findOne({ email })
+    data.password = hash
 
-    if (user) {
-      throw boom.conflict(`User with email "${email}" already exists.`)
-    }
+    const newUser = await User.collection.insertOne(data)
+      .catch(error => {
+        if (error.code === 11000) {
+          if (Object.keys(error.keyValue).includes('email')) {
+            throw boom.conflict('Email already registered')
+          } else if (Object.keys(error.keyValue).includes('username')) {
+            throw boom.conflict('Username already registered')
+          }
+        }
+      })
 
-    newUser.save()
-
-    return newUser
+    return { email: data.email, username: data.username }
   }
 
   async find() {
@@ -86,11 +91,7 @@ class UserService {
 
     const token = jwt.sign(userForToken, config.SECRET)
 
-    return {
-      email: user.email,
-      username: user.username,
-      token
-    }
+    return { token }
   }
 }
 

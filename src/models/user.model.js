@@ -15,7 +15,10 @@ const userSchema = new Schema({
   },
   username: {
     type: String,
-    required: true
+    unique: true,
+    required: true,
+    lowercase: true,
+    trim: true
   },
   palettes: [{
     type: Schema.Types.ObjectId,

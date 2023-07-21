@@ -1,8 +1,10 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 const config = require('./config/config')
+const {corsOptions} = require('./config/corsOptions')
 
 const { errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
 const routerApi = require('./routes')
@@ -17,7 +19,8 @@ app.set('port', config.PORT)
 
 // middlewares
 app.use(morgan('dev'))
-app.use(cors())
+app.use(cors(corsOptions))
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
