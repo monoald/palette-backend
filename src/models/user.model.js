@@ -23,6 +23,10 @@ const userSchema = new Schema({
   palettes: [{
     type: Schema.Types.ObjectId,
     ref: 'Palette'
+  }],
+  colors: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Color'
   }]
 })
 

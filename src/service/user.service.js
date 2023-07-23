@@ -33,6 +33,9 @@ class UserService {
       'length': 1,
       'savedCount': 1,
       '_id': 0
+    }).populate('colors', {
+      'name': 1,
+      '_id': 0
     })
 
     return users

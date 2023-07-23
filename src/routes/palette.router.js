@@ -3,7 +3,7 @@ const { Router } = require('express')
 const { createPalette, getPalettes, getPalette, savePalette, unsavePalette } = require('../controllers/palette.controller')
 const { validatorHandler } = require('../middlewares/validator.handler')
 const { paletteSchema, getPaletteSchema, getPalettesPaginationSchema } = require('../schemas/palette.schema')
-const { userExtractor } = require('../middlewares/userExtractor')
+const { tokenDecoderHandler } = require('../middlewares/tokenDecoder.handler')
 
 const router = Router()
 
@@ -20,21 +20,21 @@ router.get('/:id',
 router.post(
   '/',
   validatorHandler(paletteSchema, 'body'),
-  userExtractor,
+  tokenDecoderHandler,
   createPalette
 )
 
 router.post(
   '/save',
   validatorHandler(paletteSchema, 'body'),
-  userExtractor,
+  tokenDecoderHandler,
   savePalette
 )
 
 router.post(
   '/unsave',
   validatorHandler(getPaletteSchema, 'body'),
-  userExtractor,
+  tokenDecoderHandler,
   unsavePalette
 )
 
