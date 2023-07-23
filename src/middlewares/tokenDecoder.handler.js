@@ -5,34 +5,31 @@ const config = require('../config/config')
 const User = require('../models/user.model')
 
 async function tokenDecoderHandler(req, res, next) {
-  try {
-    const authorization = req.get('authorization')
-    let token = null
-    let decodedToken = null
-  
-    if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-      token = authorization.split(' ')[1]
-    }
-    
-    jwt.verify(token, config.SECRET, async function(error, decoded) {
-      if (error) {
-        throw boom.unauthorized('Missing or invalid token.')
-      }
+  const authorization = req.get('authorization')
+  let token = null
 
-      const { id } = decoded
-
-      const userExists = await User.findById(id)
-    
-      if (!userExists) {
-        throw boom.notFound('User does not exist.')
-      }
-    
-      req.userId = id
-      next()
-    })
-  } catch (error) {
-    next(error)
+  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
+    token = authorization.split(' ')[1]
   }
+  
+  jwt.verify(token, config.SECRET, async function(error, decoded) {
+    if (error) {
+      next(boom.unauthorized('Missing or invalid token.'))
+      return
+    }
+
+    const { id } = decoded
+
+    const userExists = await User.findById(id)
+  
+    if (!userExists) {
+      next(boom.notFound('User does not exist.'))
+      return
+    }
+  
+    req.userId = id
+    next()
+  })
 }
 
 module.exports = { tokenDecoderHandler }
