@@ -1,6 +1,11 @@
 const { model, Schema } = require('mongoose')
 const bcrypt = require('bcrypt')
 
+const passportLocalMongoose = require('passport-local-mongoose')
+const findOrCreate = require('mongoose-findorcreate')
+const { SECRET } = require('../config/config')
+const jwt = require('jsonwebtoken')
+
 const userSchema = new Schema({
   email: {
     type: String,
@@ -11,7 +16,11 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: true
+    minlength: 6,
+    maxlength: 60,
+  },
+  name: {
+    type: String,
   },
   username: {
     type: String,
@@ -20,6 +29,15 @@ const userSchema = new Schema({
     lowercase: true,
     trim: true
   },
+  avatar: String,
+  provider: {
+    type: String,
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
   palettes: [{
     type: Schema.Types.ObjectId,
     ref: 'Palette'
@@ -27,8 +45,11 @@ const userSchema = new Schema({
   colors: [{
     type: Schema.Types.ObjectId,
     ref: 'Color'
-  }]
+  }],
 })
+
+// userSchema.plugin(findOrCreate)
+userSchema.plugin(passportLocalMongoose)
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -49,6 +70,19 @@ userSchema.pre('save', async function (next) {
   user.password = hash
   next()
 })
+
+userSchema.methods.generateJWT = function () {
+  const token = jwt.sign(
+    {
+      provider: this.provider,
+      email: this.email,
+      id: this.id
+    },
+    SECRET,
+    { expiresIn: '60d' },
+  );
+  return token;
+};
 
 const User = model('User', userSchema)
 

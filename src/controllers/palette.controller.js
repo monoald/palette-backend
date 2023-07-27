@@ -39,7 +39,7 @@ const savePalette = async (req, res, next) => {
     const { colors } = req.body
     const { userId } = req
 
-    const palette = await service.save({ colors, userId })
+    const palette = await service.save(colors, userId)
     res.json(palette)
   } catch (error) {
     next(error)
@@ -47,11 +47,11 @@ const savePalette = async (req, res, next) => {
 }
 
 const unsavePalette = async (req, res, next) => {
-  const { id } = req.body
+  const { colors } = req.body
   const { userId } = req
 
   try {
-    const palette = await service.unsave({ id, userId })
+    const palette = await service.unsave(colors, userId)
     res.json(palette)
   } catch (error) {
     next(error)

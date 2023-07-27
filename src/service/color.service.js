@@ -10,7 +10,8 @@ class ColorService {
   async create(name, userId) {
     const newColor = await Color.collection.insertOne({
       name,
-      users: [userId]
+      users: [userId],
+      savedCount: 1
     })
       .catch(error => {
         if (error.code === 11000) {
@@ -29,7 +30,7 @@ class ColorService {
     const limit = 20
     const offset = (page - 1) * limit
     const colors = await Color.find({})
-      .sort({ savedCount: -1 })
+      // .sort({ savedCount: -1 })
       .limit(limit)
       .skip(offset)
 
@@ -48,7 +49,7 @@ class ColorService {
 
   async save(name, userId) {
     const color = await Color.findOne({ name })
-    console.log(color);
+    console.log(color, userId);
 
     if (!color) {
       const newColor = await this.create(name, userId)
@@ -77,8 +78,7 @@ class ColorService {
     if (!user.colors.includes(color.id)) {
       throw boom.notImplemented('Color wasn\'t in saved colors')
     }
-
-    removeIdFromArray(name.id, user.colors)
+    removeIdFromArray(color.id, user.colors)
     removeIdFromArray(userId, color.users)
     user.save()
     color.save()

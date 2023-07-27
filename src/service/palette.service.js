@@ -28,10 +28,9 @@ class UserService {
   }
 
   async find(page) {
-    const limit = 2
+    const limit = 20
     const offset = (page - 1) * limit
     const palettes = await Palette.find({})
-      .sort({ savedCount: -1 })
       .limit(limit)
       .skip(offset)
 
@@ -48,7 +47,7 @@ class UserService {
     return palette
   }
 
-  async save({colors, userId}) {
+  async save(colors, userId) {
     const palette = await Palette.findOne({ colors })
     if (!palette) {
       const newPalette = await this.create({ colors, userId })
@@ -70,15 +69,15 @@ class UserService {
     return palette
   }
 
-  async unsave({id, userId}) {
-    const palette = await this.findOne(id)
+  async unsave(colors, userId) {
+    const palette = await Palette.findOne({ colors })
     const user = await User.findById(userId)
 
-    if (!user.palettes.includes(id)) {
+    if (!user.palettes.includes(palette.id)) {
       throw boom.notImplemented('Palette wasn\'t in saved palettes')
     }
 
-    removeIdFromArray(id, user.palettes)
+    removeIdFromArray(palette.id, user.palettes)
     removeIdFromArray(userId, palette.users)
     user.save()
     palette.save()

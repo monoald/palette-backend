@@ -33,7 +33,7 @@ router.post(
 
 router.post(
   '/unsave',
-  validatorHandler(getPaletteSchema, 'body'),
+  validatorHandler(paletteSchema, 'body'),
   tokenDecoderHandler,
   unsavePalette
 )
