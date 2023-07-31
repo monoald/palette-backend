@@ -1,8 +1,9 @@
 const User = require('../models/user.model')
 const boom = require('@hapi/boom')
-const config = require('../config/config')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+
+const config = require('../config/config')
 
 class UserService {
   constructor() {}
@@ -33,21 +34,30 @@ class UserService {
       'length': 1,
       'savedCount': 1,
       '_id': 0
-    }).populate('colors', {
-      'name': 1,
-      '_id': 0
-    })
+      })
+      .populate('colors', {
+        'name': 1,
+        '_id': 0
+      })
 
     return users
   }
 
-  async findOne(id) {
-    const user = await User.findById(id).populate('palettes', {
-      'colors': 1,
-      'length': 1,
-      'savedCount': 1,
-      '_id': 0
-    })
+  async findOne(idFromParams, idFromToken) {
+    if (idFromParams !== idFromToken) throw boom.notFound(`You have no access to this user.`)
+
+    const user = await User.findById(idFromToken)
+      .select('palettes colors')
+      .populate('palettes', {
+        'colors': 1,
+        'length': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('colors', {
+        'name': 1,
+        '_id': 1
+      })
 
     if (user === null) {
       throw boom.notFound(`User not found.`)

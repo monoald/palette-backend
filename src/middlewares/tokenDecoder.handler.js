@@ -20,8 +20,6 @@ async function tokenDecoderHandler(req, res, next) {
 
     const { id } = decoded
 
-    console.log(id);
-
     const userExists = await User.findById(id)
   
     if (!userExists) {

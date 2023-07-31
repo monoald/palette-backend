@@ -31,8 +31,9 @@ const getUsers = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const { id } = req.params
-    const user = await service.findOne(id)
+    const { id: idFromParams } = req.params
+    const { userId: idFromToken } = req
+    const user = await service.findOne(idFromParams, idFromToken)
     res.json(user)
   } catch (error) {
     next(error)
