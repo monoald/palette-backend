@@ -49,7 +49,6 @@ class ColorService {
 
   async save(name, userId) {
     const color = await Color.findOne({ name })
-    console.log(color, userId);
 
     if (!color) {
       const newColor = await this.create(name, userId)

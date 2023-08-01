@@ -2,34 +2,25 @@ const { Strategy } = require("passport-google-oauth20")
 const passport = require("passport")
 
 const User = require("../../models/user.model")
-const { GOOGLE_CLIENT_ID, GOOGLE_SECRET } = require("../../config/config")
-
-const serverUrl = 'http://localhost:3000'
+const { GOOGLE_CLIENT_ID, GOOGLE_SECRET, SERVER_URI } = require("../../config/config")
 
 const googleSignin = new Strategy(
   {
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_SECRET,
-    callbackURL: `${serverUrl}/api/v1/auth/google/callback`,
+    callbackURL: `${SERVER_URI}/auth/google/callback`,
     proxy: true
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      const oldUser = await User.findOne({ email: profile.email })
+      const oldUser = await User.findOne({ googleId: profile._json.sub })
 
-      if (oldUser) {
-        return done(null, oldUser)
-      }
+      if (oldUser) return done(null, oldUser)
     } catch (error) {
-      
+      console.log(error);
     }
 
     try {
-      const oldUser = await User.findOne({ email: profile._json.email })
-      if (oldUser) {
-        done(null, oldUser)
-        return
-      }
       const newUser = await new User({
         email: profile._json.email,
         name: profile._json.name,
@@ -46,4 +37,4 @@ const googleSignin = new Strategy(
   }
 )
 
-passport.use('google', googleSignin)
+module.exports = { googleSignin }

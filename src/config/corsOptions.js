@@ -1,4 +1,6 @@
-const allowedOrigins = ['http://localhost:5173']
+const { CLIENT_URI } = require("./config");
+
+const allowedOrigins = [CLIENT_URI]
 
 const corsOptions = {
   credentials: true,

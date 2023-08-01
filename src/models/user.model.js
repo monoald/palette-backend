@@ -10,7 +10,6 @@ const userSchema = new Schema({
   email: {
     type: String,
     unique: true,
-    required: true,
     lowercase: true,
     trim: true
   },
@@ -34,6 +33,11 @@ const userSchema = new Schema({
     type: String,
   },
   googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  facebookId: {
     type: String,
     unique: true,
     sparse: true,
