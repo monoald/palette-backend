@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const config = require('../config/config')
+const { selectRandomAvatar } = require('../utils/selectRandomAvatar')
 
 class UserService {
   constructor() {}
@@ -13,6 +14,8 @@ class UserService {
     const hash = await bcrypt.hash(data.password, salt)
 
     data.password = hash
+
+    data.avatar = selectRandomAvatar()
 
     const newUser = await User.collection.insertOne(data)
       .catch(error => {
@@ -104,7 +107,17 @@ class UserService {
 
     const token = jwt.sign(userForToken, config.SECRET)
 
-    return { token }
+    return {
+      token, 
+      user: {
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        id: user.id,
+        provider: user.provider
+      }
+    }
   }
 }
 

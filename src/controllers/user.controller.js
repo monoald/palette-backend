@@ -14,6 +14,8 @@ const signUp = async (req, res, next) => {
 const signIn = async (req, res, next) => {
   try {
     const result = await service.signIn(req.body)
+    res.cookie('user', result.user)
+    res.cookie('token', result.token)
     res.json(result)
   } catch (error) {
     next(error)
