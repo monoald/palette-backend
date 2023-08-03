@@ -2,10 +2,10 @@
   "name": "palette-backend",
   "version": "1.0.0",
   "description": "Backend application of Palette",
-  "main": "app.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/app.js"
+    "start": "node src/index"
   },
   "author": "",
   "license": "ISC",
