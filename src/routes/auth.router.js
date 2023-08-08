@@ -1,7 +1,9 @@
 const { Router } = require('express')
 const passport = require('passport')
-const { sendCredentials } = require('../controllers/auth.controller')
+const { sendCredentials, sendKey } = require('../controllers/auth.controller')
 const { CLIENT_URI } = require('../config/config')
+const { validatorHandler } = require('../middlewares/validator.handler')
+const { signInAuthSchema } = require('../schemas/auth.schema')
 
 const router = Router()
 
@@ -12,7 +14,7 @@ router.get(
     failureRedirect: `${CLIENT_URI}/signin`,
     session: false,
   }),
-  sendCredentials
+  sendKey
 )
 
 router.get(
@@ -22,6 +24,12 @@ router.get(
     failureRedirect: `${CLIENT_URI}/signin`,
     session: false,
   }),
+  sendKey
+)
+
+router.post(
+  '/signin',
+  validatorHandler(signInAuthSchema, 'body'),
   sendCredentials
 )
 

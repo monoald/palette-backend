@@ -1,6 +1,8 @@
 const passport = require('passport')
 const { Strategy } = require('passport-facebook')
 
+const { generateSignInKey } = require('../../utils/generateSignInKey')
+
 const User =  require('../../models/user.model')
 const { FACEBOOK_APP_ID, FACEBOOK_SECRET, SERVER_URI } = require('../../config/config')
 
@@ -20,10 +22,13 @@ const facebookSignIn = new Strategy(
   async (accessToken, refreshToken, profile, done) => {
     try {
       const oldUser = await User.findOne({ facebookId: profile.id })
+      oldUser.signInKey = generateSignInKey()
+      oldUser.save()
+
 
       if (oldUser) return done(null, oldUser)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
 
     try {
@@ -33,11 +38,12 @@ const facebookSignIn = new Strategy(
         avatar: profile.photos[0].value,
         provider: 'facebook',
         facebookId: profile.id,
+        signInKey: generateSignInKey()
       }).save()
 
       done(null, newUser)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 )

@@ -32,6 +32,12 @@ const userSchema = new Schema({
   provider: {
     type: String,
   },
+  signInKey: {
+    type: String,
+    unique: true,
+    minlength: 20,
+    maxlength: 20
+  },
   googleId: {
     type: String,
     unique: true,
@@ -52,7 +58,6 @@ const userSchema = new Schema({
   }],
 })
 
-// userSchema.plugin(findOrCreate)
 userSchema.plugin(passportLocalMongoose)
 
 userSchema.set('toJSON', {
