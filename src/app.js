@@ -9,6 +9,7 @@ const { corsOptions } = require('./config/corsOptions')
 const { errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
 const { googleSignin } = require('./service/authentication/googleStrategy')
 const { facebookSignIn } = require('./service/authentication/facebookStrategy')
+const { githubSignIn } = require('./service/authentication/githubStrategy')
 const routerApi = require('./routes')
 
 require('./database')
@@ -28,6 +29,7 @@ app.use(express.json())
 app.use(passport.initialize())
 passport.use('google', googleSignin)
 passport.use('facebook', facebookSignIn)
+passport.use('github', githubSignIn)
 
 routerApi(app)
 

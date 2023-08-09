@@ -48,6 +48,11 @@ const userSchema = new Schema({
     unique: true,
     sparse: true,
   },
+  githubId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
   palettes: [{
     type: Schema.Types.ObjectId,
     ref: 'Palette'

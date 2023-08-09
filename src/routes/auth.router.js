@@ -27,6 +27,16 @@ router.get(
   sendKey
 )
 
+router.get(
+  '/github/callback',
+  passport.authenticate('github', {
+    scope: 'user:email',
+    failureRedirect: `${CLIENT_URI}/signin`,
+    session: false,
+  }),
+  sendKey
+)
+
 router.post(
   '/signin',
   validatorHandler(signInAuthSchema, 'body'),
