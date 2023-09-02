@@ -32,13 +32,17 @@ class UserService {
   }
 
   async find() {
-    const users = await User.find({}).populate('palettes', {
+    const users = await User.find({})
+      .populate('palettes', {
       'colors': 1,
       'length': 1,
-      'savedCount': 1,
       '_id': 0
       })
       .populate('colors', {
+        'name': 1,
+        '_id': 0
+      })
+      .populate('gradients', {
         'name': 1,
         '_id': 0
       })
@@ -50,7 +54,7 @@ class UserService {
     if (idFromParams !== idFromToken) throw boom.notFound(`You have no access to this user.`)
 
     const user = await User.findById(idFromToken)
-      .select('palettes colors')
+      .select('palettes colors gradients')
       .populate('palettes', {
         'colors': 1,
         'length': 1,
@@ -59,6 +63,11 @@ class UserService {
       })
       .populate('colors', {
         'name': 1,
+        '_id': 1
+      })
+      .populate('gradients', {
+        'name': 1,
+        'savedCount': 1,
         '_id': 1
       })
 

@@ -61,6 +61,10 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Color'
   }],
+  gradients: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Gradient'
+  }],
 })
 
 userSchema.plugin(passportLocalMongoose)
