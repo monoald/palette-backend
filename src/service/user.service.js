@@ -46,6 +46,10 @@ class UserService {
         'name': 1,
         '_id': 0
       })
+      .populate('gradient-animations', {
+        'name': 1,
+        '_id': 0
+      })
 
     return users
   }
@@ -54,7 +58,7 @@ class UserService {
     if (idFromParams !== idFromToken) throw boom.notFound(`You have no access to this user.`)
 
     const user = await User.findById(idFromToken)
-      .select('palettes colors gradients')
+      .select('palettes colors gradients gradient-animations')
       .populate('palettes', {
         'colors': 1,
         'length': 1,
@@ -66,6 +70,11 @@ class UserService {
         '_id': 1
       })
       .populate('gradients', {
+        'name': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('gradient-animations', {
         'name': 1,
         'savedCount': 1,
         '_id': 1

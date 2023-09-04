@@ -4,7 +4,8 @@ const usersRouter = require('./user.router')
 const palettesRouter = require('./palette.router')
 const colorsRouter = require('./color.router')
 const authRouter = require('./auth.router')
-const gradientRouter = require('./gradient.router')
+const gradientsRouter = require('./gradient.router')
+const gradientAnimationsRouter = require('./gradientAnimation.router')
 
 function routerApi(app) {
   const router = express.Router()
@@ -15,7 +16,8 @@ function routerApi(app) {
   router.use('/palettes', palettesRouter)
   router.use('/colors', colorsRouter)
   router.use('/auth', authRouter)
-  router.use('/gradients', gradientRouter)
+  router.use('/gradients', gradientsRouter)
+  router.use('/gradient-animations', gradientAnimationsRouter)
 }
 
 module.exports = routerApi

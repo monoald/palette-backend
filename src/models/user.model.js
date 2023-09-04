@@ -65,6 +65,10 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Gradient'
   }],
+  'gradient-animations': [{
+    type: Schema.Types.ObjectId,
+    ref: 'Gradient-Animation'
+  }],
 })
 
 userSchema.plugin(passportLocalMongoose)
