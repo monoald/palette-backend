@@ -1,8 +1,8 @@
 const https = require('https')
 const fs = require('fs')
 
-const app = require('./app')
-const { STATUS } = require('./config/config')
+const app = require('../src/app')
+const { STATUS } = require('../src/config/config')
 
 if (STATUS === 'dev') {
   const options = {
