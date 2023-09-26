@@ -9,6 +9,33 @@ const sendCredentials = async (req, res, next) => {
   try {
     const key = req.body.key
     const user = await User.findOne({ signInKey: key })
+      .populate('palettes', {
+        'colors': 1,
+        'length': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('colors', {
+        'name': 1,
+        '_id': 1
+      })
+      .populate('gradients', {
+        'name': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('gradient-animations', {
+        'name': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('icons', {
+        'name': 1,
+        'icons': 1,
+        'color': 1,
+        'thumbnail': 1,
+        '_id': 1
+      })
 
     if (!user || user.signInKey !== key) throw boom.notFound('Invalid key')
 
@@ -31,7 +58,12 @@ const sendCredentials = async (req, res, next) => {
         email: user.email,
         avatar: user.avatar,
         id: user.id,
-        provider: user.provider
+        provider: user.provider,
+        palettes: user.palettes,
+        colors: user.colors,
+        gradients: user.gradients,
+        'gradient-animations': user['gradient-animations'],
+        icons: user.icons
       }
     })
   } catch (error) {

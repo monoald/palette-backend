@@ -36,7 +36,8 @@ const userSchema = new Schema({
     type: String,
     unique: true,
     minlength: 20,
-    maxlength: 20
+    maxlength: 20,
+    sparse: true
   },
   googleId: {
     type: String,
@@ -68,6 +69,10 @@ const userSchema = new Schema({
   'gradient-animations': [{
     type: Schema.Types.ObjectId,
     ref: 'Gradient-Animation'
+  }],
+  icons: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Icon'
   }],
 })
 

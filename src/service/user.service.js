@@ -50,6 +50,12 @@ class UserService {
         'name': 1,
         '_id': 0
       })
+      .populate('icons', {
+        'name': 1,
+        'icons': 1,
+        'color': 1,
+        '_id': 1
+      })
 
     return users
   }
@@ -58,7 +64,7 @@ class UserService {
     if (idFromParams !== idFromToken) throw boom.notFound(`You have no access to this user.`)
 
     const user = await User.findById(idFromToken)
-      .select('palettes colors gradients gradient-animations')
+      .select('palettes colors gradients gradient-animations icons')
       .populate('palettes', {
         'colors': 1,
         'length': 1,
@@ -77,6 +83,13 @@ class UserService {
       .populate('gradient-animations', {
         'name': 1,
         'savedCount': 1,
+        '_id': 1
+      })
+      .populate('icons', {
+        'name': 1,
+        'icons': 1,
+        'color': 1,
+        'thumbnail': 1,
         '_id': 1
       })
 
@@ -109,6 +122,33 @@ class UserService {
 
   async signIn({ email, password }) {
     const user = await User.findOne({ email })
+      .populate('palettes', {
+        'colors': 1,
+        'length': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('colors', {
+        'name': 1,
+        '_id': 1
+      })
+      .populate('gradients', {
+        'name': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('gradient-animations', {
+        'name': 1,
+        'savedCount': 1,
+        '_id': 1
+      })
+      .populate('icons', {
+        'name': 1,
+        'icons': 1,
+        'color': 1,
+        'thumbnail': 1,
+        '_id': 1
+      })
 
     const correctPassword = user === null
       ? false
@@ -133,7 +173,12 @@ class UserService {
         email: user.email,
         avatar: user.avatar,
         id: user.id,
-        provider: user.provider
+        provider: user.provider,
+        palettes: user.palettes,
+        colors: user.colors,
+        gradients: user.gradients,
+        'gradient-animations': user['gradient-animations'],
+        icons: user.icons
       }
     }
   }

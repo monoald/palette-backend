@@ -6,6 +6,7 @@ const colorsRouter = require('./color.router')
 const authRouter = require('./auth.router')
 const gradientsRouter = require('./gradient.router')
 const gradientAnimationsRouter = require('./gradientAnimation.router')
+const iconsRouter = require('./icon.router')
 
 function routerApi(app) {
   const router = express.Router()
@@ -18,6 +19,7 @@ function routerApi(app) {
   router.use('/auth', authRouter)
   router.use('/gradients', gradientsRouter)
   router.use('/gradient-animations', gradientAnimationsRouter)
+  router.use('/icons', iconsRouter)
 }
 
 module.exports = routerApi
