@@ -1,5 +1,6 @@
 const { Strategy } = require('passport-google-oauth20')
 const passport = require('passport')
+const { default: axios } = require('axios')
 
 const User = require('../../models/user.model')
 const { GOOGLE_CLIENT_ID, GOOGLE_SECRET, SERVER_URI } = require('../../config/config')
@@ -15,26 +16,33 @@ const googleSignin = new Strategy(
   async (accessToken, refreshToken, profile, done) => {
     try {
       const oldUser = await User.findOne({ googleId: profile._json.sub })
-      oldUser.signInKey = generateSignInKey()
-      oldUser.save()
+      if (oldUser) {
+        oldUser.signInKey = generateSignInKey()
+        oldUser.save()
+        return done(null, oldUser)
+      } else {
+        let image 
+        await axios
+          .get(profile.photos[0].value, {
+            responseType: 'arraybuffer'
+          })
+          .then(response => {
+            image = Buffer.from(response.data, 'binary').toString('base64')
+          })
 
-      if (oldUser) return done(null, oldUser)
-    } catch (error) {
-      console.log(error)
-    }
+        const newUser = await new User({
+          email: profile._json.email,
+          name: profile._json.name,
+          username: `user${profile._json.sub}`,
+          avatar: image,
+          provider: 'google',
+          googleId: profile._json.sub,
+          signInKey: generateSignInKey()
+        }).save()
 
-    try {
-      const newUser = await new User({
-        email: profile._json.email,
-        name: profile._json.name,
-        username: `user${profile._json.sub}`,
-        avatar: profile._json.picture,
-        provider: 'google',
-        googleId: profile._json.sub,
-        signInKey: generateSignInKey()
-      }).save()
+        return done(null, newUser)
+      }
 
-      done(null, newUser)
     } catch (error) {
       console.log(error)
     }

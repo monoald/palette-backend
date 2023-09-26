@@ -1,5 +1,6 @@
 const passport = require('passport')
 const { Strategy } = require('passport-facebook')
+const { default: axios } = require('axios')
 
 const { generateSignInKey } = require('../../utils/generateSignInKey')
 
@@ -22,26 +23,31 @@ const facebookSignIn = new Strategy(
   async (accessToken, refreshToken, profile, done) => {
     try {
       const oldUser = await User.findOne({ facebookId: profile.id })
-      oldUser.signInKey = generateSignInKey()
-      oldUser.save()
+      if (oldUser) {
+        oldUser.signInKey = generateSignInKey()
+        oldUser.save()
+        return done(null, oldUser)
+      } else {
+        let image 
+        await axios
+          .get(profile.photos[0].value, {
+            responseType: 'arraybuffer'
+          })
+          .then(response => {
+            image = Buffer.from(response.data, 'binary').toString('base64')
+          })
 
+        const newUser = await new User({
+          name: profile._json.name,
+          username: profile.username || `user${profile.id}`,
+          avatar: image,
+          provider: 'facebook',
+          facebookId: profile.id,
+          signInKey: generateSignInKey()
+        }).save()
 
-      if (oldUser) return done(null, oldUser)
-    } catch (error) {
-      console.log(error)
-    }
-
-    try {
-      const newUser = await new User({
-        name: profile._json.name,
-        username: profile.username || `user${profile.id}`,
-        avatar: profile.photos[0].value,
-        provider: 'facebook',
-        facebookId: profile.id,
-        signInKey: generateSignInKey()
-      }).save()
-
-      done(null, newUser)
+        done(null, newUser)
+      }
     } catch (error) {
       console.log(error)
     }

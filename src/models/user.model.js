@@ -36,7 +36,8 @@ const userSchema = new Schema({
     type: String,
     unique: true,
     minlength: 20,
-    maxlength: 20
+    maxlength: 20,
+    sparse: true
   },
   googleId: {
     type: String,
@@ -60,6 +61,18 @@ const userSchema = new Schema({
   colors: [{
     type: Schema.Types.ObjectId,
     ref: 'Color'
+  }],
+  gradients: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Gradient'
+  }],
+  'gradient-animations': [{
+    type: Schema.Types.ObjectId,
+    ref: 'Gradient-Animation'
+  }],
+  icons: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Icon'
   }],
 })
 
