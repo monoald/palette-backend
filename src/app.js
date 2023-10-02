@@ -12,7 +12,7 @@ const { facebookSignIn } = require('./service/authentication/facebookStrategy')
 const { githubSignIn } = require('./service/authentication/githubStrategy')
 const routerApi = require('./routes')
 
-require('./database')
+const { connection } = require('./database')
 
 // initializations
 const app = express()
@@ -35,5 +35,11 @@ routerApi(app)
 
 app.use(boomErrorHandler)
 app.use(errorHandler)
+
+connection.once('open', () => {
+  app.listen(PORT, () => {
+    console.log('Server on port: ' + PORT)
+  })
+})
 
 module.exports = app
