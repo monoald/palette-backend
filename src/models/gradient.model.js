@@ -14,6 +14,12 @@ const gradientSchema = new Schema({
   }],
   savedCount: {
     type: Number
+  },
+  upId: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true,
   }
 })
 

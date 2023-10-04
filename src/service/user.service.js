@@ -78,6 +78,7 @@ class UserService {
       .populate('gradients', {
         'name': 1,
         'savedCount': 1,
+        'upId': 1,
         '_id': 1
       })
       .populate('gradient-animations', {

@@ -27,12 +27,8 @@ class UserService {
     return newPalette
   }
 
-  async find(page) {
-    const limit = 20
-    const offset = (page - 1) * limit
+  async find() {
     const palettes = await Palette.find({})
-      .limit(limit)
-      .skip(offset)
 
     return palettes
   }
