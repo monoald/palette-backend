@@ -17,8 +17,6 @@ class GradientService {
   async create(name, userId) {
     const palette = getPaletteFromGradient(name)
     const upId = generatePaletteId(name)
-    await service.create(palette, upId)
-      .catch((error) => {})
 
     const newGradient = await Gradient.collection.insertOne({
       name,
@@ -34,9 +32,14 @@ class GradientService {
 
     const user = await User.findById(userId)
     user.gradients.push(newGradient.insertedId.toString())
-    user.save()
+    await user.save()
 
-    
+    await service.create(
+      palette,
+      userId,
+      upId,
+    )
+      .catch(() => {})
 
     return { name }
   }
@@ -62,6 +65,7 @@ class GradientService {
   }
 
   async save(name, userId) {
+    const palette = getPaletteFromGradient(name)
     const gradient = await Gradient.findOne({ name })
 
     if (!gradient) {
@@ -75,12 +79,14 @@ class GradientService {
     }
 
     gradient.users.push(userId)
-    gradient.save()
+    await gradient.save()
 
     const user = await User.findById(userId)
     user.gradients.push(gradient.id)
-    user.save()
-    
+    await user.save()
+
+    await service.save(palette, userId, gradient.upId)
+
     return gradient
   }
 
@@ -93,8 +99,20 @@ class GradientService {
     }
     removeIdFromArray(gradient.id, user.gradients)
     removeIdFromArray(userId, gradient.users)
-    user.save()
-    gradient.save()
+    await user.save()
+    await gradient.save()
+
+    let stillSamePalette = false
+
+    user.gradients.forEach(plt => {
+      if (gradient.upId == plt.upId) {
+        stillSamePalette = true
+      }
+    })
+    
+    if (!stillSamePalette) {
+      await service.unsave(gradient.upId, user._id)
+    }
 
     return gradient
   }

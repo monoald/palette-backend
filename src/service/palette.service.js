@@ -17,7 +17,7 @@ class PaletteService {
     const palette = await Palette.findOne({ colors })
 
     if (palette) {
-      throw boom.conflict(`Palette "${colors}" already created.`)
+      throw boom.conflict('Palette already created.')
     }
 
     const upId = generatePaletteId(colors)

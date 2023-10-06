@@ -22,16 +22,5 @@ const getPublicGradients = async (req, res, next) => {
   }
 }
 
-const getPublicGradient = async (req, res, next) => {
-  try {
-    const { id } = req.params
 
-    const gradient = await service.findOne(id)
-    res.json(gradient)
-  } catch (error) {
-    next(error)
-  }
-}
-
-
-module.exports = { createPublicGradient, getPublicGradients, getPublicGradient }
+module.exports = { createPublicGradient, getPublicGradients }

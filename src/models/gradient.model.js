@@ -1,4 +1,4 @@
-const { model, Schema } = require("mongoose");
+const { model, Schema } = require('mongoose');
 
 const gradientSchema = new Schema({
   name: {
@@ -12,12 +12,8 @@ const gradientSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   }],
-  savedCount: {
-    type: Number
-  },
   upId: {
     type: String,
-    unique: true,
     required: true,
     trim: true,
   }
@@ -29,17 +25,6 @@ gradientSchema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
   }
-})
-
-gradientSchema.pre('save', async function (next) {
-  const gradient = this
-
-  if (gradient.isModified('users')) {
-    gradient.savedCount = gradient.users.length
-    next()
-  }
-
-  next()
 })
 
 const Gradient = model('Gradient', gradientSchema)

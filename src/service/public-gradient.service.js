@@ -1,16 +1,16 @@
 const boom = require('@hapi/boom')
 
 const PublicGradient = require('../models/public-gradient.model')
+const { removeIdFromArray } = require('../utils/removeIdFromArray')
 
 class PublicGradientService {
   constructor() {}
 
-  
-  async create(name, upId) {
-    console.log('hola')
+  async create(name, userId, upId) {
     await PublicGradient.collection.insertOne({
       name,
-      upId
+      upId,
+      users: [userId]
     })
       .catch(error => {
         if (error.code === 11000) {
@@ -18,7 +18,7 @@ class PublicGradientService {
         }
       })
 
-    return { name, upId: paletteId }
+    return { name, upId }
   }
 
   async find() {
@@ -27,14 +27,33 @@ class PublicGradientService {
     return gradients
   }
 
-  async findOne(id) {
-    const gradient = await PublicGradient.findById(id)
+  async save(name, userId, upId) {
+    const gradient = await PublicGradient.findOne({ upId })
 
-    if (gradient === null) {
-      throw boom.notFound(`Gradient not found`)
+    if (!gradient) {
+      const newGradient = await this.create(name, userId, upId)
+
+      return newGradient
     }
 
+    gradient.users.push(userId)
+    await gradient.save()
+
     return gradient
+  }
+
+  async unsave(upId, userId) {
+    const gradient = await PublicGradient.findOne({ upId })
+
+    if (!gradient) {
+      throw boom.conflict(`Palette whit that colors does not exist.`)
+    }
+
+    removeIdFromArray(userId, gradient.users)
+    await gradient.save()
+
+
+    return { upId }
   }
 }
 
