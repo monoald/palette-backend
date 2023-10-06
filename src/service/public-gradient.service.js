@@ -1,8 +1,6 @@
 const boom = require('@hapi/boom')
 
 const PublicGradient = require('../models/public-gradient.model')
-const { removeIdFromArray } = require('../utils/removeIdFromArray')
-const { generatePaletteId } = require('../utils/generatePaletteId')
 
 class PublicGradientService {
   constructor() {}

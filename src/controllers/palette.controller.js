@@ -7,7 +7,7 @@ const createPalette = async (req, res, next) => {
     const { colors } = req.body
     const { userId } = req
 
-    const newPalette = await service.create({ colors, userId })
+    const newPalette = await service.create(colors, userId)
     res.status(201).json(newPalette)
   } catch (error) {
     next(error)

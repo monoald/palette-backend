@@ -2,27 +2,43 @@ const boom = require('@hapi/boom')
 
 const Palette = require('../models/palette.model')
 const User = require('../models/user.model')
-const { removeIdFromArray } = require('../utils/removeIdFromArray')
 
-class UserService {
+const PublicPaletteService = require('./public-palette.service')
+
+const { removeIdFromArray } = require('../utils/removeIdFromArray')
+const { generatePaletteId } = require('../utils/generatePaletteId')
+
+const service = new PublicPaletteService
+
+class PaletteService {
   constructor() {}
 
-  async create({ colors, userId }) {
+  async create(colors, userId) {
     const palette = await Palette.findOne({ colors })
 
     if (palette) {
       throw boom.conflict(`Palette "${colors}" already created.`)
     }
 
+    const upId = generatePaletteId(colors)
     const newPalette = new Palette({
-      'colors': colors,
-      'users': [userId]
+      colors,
+      upId,
+      users: [userId]
     })
-    newPalette.save()
-    
+    await newPalette.save()
+
     const user = await User.findById(userId)
     user.palettes.push(newPalette.id)
-    user.save()
+    await user.save()
+
+    await service.create(
+      colors,
+      userId,
+      upId,
+      newPalette.length
+    )
+      .catch(() => {})
 
     return newPalette
   }
@@ -46,7 +62,7 @@ class UserService {
   async save(colors, userId) {
     const palette = await Palette.findOne({ colors })
     if (!palette) {
-      const newPalette = await this.create({ colors, userId })
+      const newPalette = await this.create(colors, userId)
 
       return newPalette
     }
@@ -56,11 +72,13 @@ class UserService {
     }
 
     palette.users.push(userId)
-    palette.save()
+    await palette.save()
 
     const user = await User.findById(userId)
     user.palettes.push(palette.id)
-    user.save()
+    await user.save()
+
+    await service.save(colors, userId, palette.upId, palette.length)
     
     return palette
   }
@@ -68,18 +86,34 @@ class UserService {
   async unsave(colors, userId) {
     const palette = await Palette.findOne({ colors })
     const user = await User.findById(userId)
+    .populate('palettes', {
+      'upId': 1,
+      '_id': 1
+    })
 
-    if (!user.palettes.includes(palette.id)) {
+    if (user.palettes.findIndex(plt => palette.id === plt._id) !== -1) {
       throw boom.notImplemented('Palette wasn\'t in saved palettes')
     }
 
     removeIdFromArray(palette.id, user.palettes)
     removeIdFromArray(userId, palette.users)
-    user.save()
-    palette.save()
+    await user.save()
+    await palette.save()
+
+    let stillSamePalette = false
+
+    user.palettes.forEach(plt => {
+      if (palette.upId == plt.upId) {
+        stillSamePalette = true
+      }
+    })
+    
+    if (!stillSamePalette) {
+      await service.unsave(palette.upId, user._id)
+    }
 
     return palette
   }
 }
 
-module.exports = UserService
+module.exports = PaletteService

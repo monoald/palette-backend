@@ -69,6 +69,7 @@ class UserService {
         'colors': 1,
         'length': 1,
         'savedCount': 1,
+        'upId': 1,
         '_id': 1
       })
       .populate('colors', {

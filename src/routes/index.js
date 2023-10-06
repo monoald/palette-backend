@@ -1,6 +1,7 @@
 const express = require('express')
 
 const usersRouter = require('./user.router')
+const publicPalettesRouter = require('./public-palette.router')
 const palettesRouter = require('./palette.router')
 const colorsRouter = require('./color.router')
 const authRouter = require('./auth.router')
@@ -15,6 +16,7 @@ function routerApi(app) {
   app.use('/api/v1', router)
 
   router.use('/users', usersRouter)
+  router.use('/public-palettes', publicPalettesRouter)
   router.use('/palettes', palettesRouter)
   router.use('/colors', colorsRouter)
   router.use('/auth', authRouter)

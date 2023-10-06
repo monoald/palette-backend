@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose')
 const { getQuantityFromColors } = require('../utils/getQuantityFromColors')
 
-const paletteSchema = new Schema({
+const publicPaletteSchema = new Schema({
   colors: {
     type: String,
     unique: true,
@@ -10,20 +10,25 @@ const paletteSchema = new Schema({
     trim: true
   },
   length: {
-    type: Number
+    type: Number,
+    required: true
   },
   upId: {
     type: String,
+    unique: true,
     required: true,
     trim: true,
   },
   users: [{
     type: Schema.Types.ObjectId,
     ref: 'User'
-  }]
-})
+  }],
+  savedCount: {
+    type: Number
+  }
+}) 
 
-paletteSchema.set('toJSON', {
+publicPaletteSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id
     delete returnedObject._id
@@ -31,17 +36,22 @@ paletteSchema.set('toJSON', {
   }
 })
 
-paletteSchema.pre('save', async function (next) {
+publicPaletteSchema.pre('save', async function (next) {
   const palette = this
 
   if (palette.isModified('colors')) {
-    palette.length = getQuantityFromColors(palette.colors)
+    palette.savedCount = 1
+    next()
+  }
+
+  if (palette.isModified('users')) {
+    palette.savedCount = palette.users.length
     next()
   }
 
   next()
 })
 
-const Palette = model('Palette', paletteSchema)
+const PublicPalette = model('Public-Palette', publicPaletteSchema)
 
-module.exports = Palette
+module.exports = PublicPalette
