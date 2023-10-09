@@ -16,9 +16,7 @@ const createGradient = async (req, res, next) => {
 
 const getGradients = async (req, res, next) => {
   try {
-    const { page } = req.query
-
-    const gradients = await service.find(page)
+    const gradients = await service.find()
     res.json(gradients)
   } catch (error) {
     next(error)

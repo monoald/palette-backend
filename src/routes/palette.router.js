@@ -2,13 +2,12 @@ const { Router } = require('express')
 
 const { createPalette, getPalettes, getPalette, savePalette, unsavePalette } = require('../controllers/palette.controller')
 const { validatorHandler } = require('../middlewares/validator.handler')
-const { paletteSchema, getPaletteSchema, getPalettesPaginationSchema } = require('../schemas/palette.schema')
+const { paletteSchema, getPaletteSchema } = require('../schemas/palette.schema')
 const { tokenDecoderHandler } = require('../middlewares/tokenDecoder.handler')
 
 const router = Router()
 
 router.get('/',
-  validatorHandler(getPalettesPaginationSchema, 'query'),
   getPalettes
 )
 

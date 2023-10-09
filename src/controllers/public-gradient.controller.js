@@ -15,7 +15,9 @@ const createPublicGradient = async (req, res, next) => {
 
 const getPublicGradients = async (req, res, next) => {
   try {
-    const gradients = await service.find()
+    const { page } = req.query
+
+    const gradients = await service.find(page)
     res.json(gradients)
   } catch (error) {
     next(error)

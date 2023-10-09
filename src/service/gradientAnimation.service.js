@@ -26,12 +26,8 @@ class GradientAnimationService {
     return { name }
   }
 
-  async find(page) {
-    const limit = 20
-    const offset = (page - 1) * limit
-    const gradientsAnimations = await GradientAnimation.find({})
-      .limit(limit)
-      .skip(offset)
+  async find() {
+    const gradientsAnimations = await GradientAnimation.find()
 
     return gradientsAnimations
   }

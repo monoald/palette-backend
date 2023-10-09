@@ -17,6 +17,7 @@ const createPalette = async (req, res, next) => {
 const getPalettes = async (req, res, next) => {
   try {
     const { page } = req.query
+
     const palettes = await service.find(page)
     res.json(palettes)
   } catch (error) {

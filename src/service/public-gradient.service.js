@@ -21,8 +21,13 @@ class PublicGradientService {
     return { name, upId }
   }
 
-  async find() {
+  async find(page) {
+    const limit = 5
+    const offset = (page - 1) * limit
+
     const gradients = await PublicGradient.find({})
+      .limit(limit)
+      .skip(offset)
 
     return gradients
   }

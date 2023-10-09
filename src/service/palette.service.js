@@ -44,7 +44,7 @@ class PaletteService {
   }
 
   async find() {
-    const palettes = await Palette.find({})
+    const palettes = await Palette.find()
 
     return palettes
   }

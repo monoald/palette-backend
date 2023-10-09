@@ -1,7 +1,7 @@
 const { Router } = require("express");
 
 const { validatorHandler } = require("../middlewares/validator.handler");
-const { gradientAnimationSchema, getGradientAnimationSchema, getGradientAnimationPaginationSchema } = require("../schemas/gradientAnimation.schema");
+const { gradientAnimationSchema, getGradientAnimationSchema } = require("../schemas/gradientAnimation.schema");
 const { tokenDecoderHandler } = require("../middlewares/tokenDecoder.handler");
 const { createGradientAnimation, getGradientAnimations, getGradientAnimation, saveGradientAnimation, unsaveGradientAnimation } = require("../controllers/gradientAnimation.controller");
 
@@ -9,7 +9,6 @@ const router = Router()
 
 router.get(
   '/',
-  validatorHandler(getGradientAnimationPaginationSchema, 'query'),
   getGradientAnimations
 )
 

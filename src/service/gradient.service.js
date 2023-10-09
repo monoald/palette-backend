@@ -44,12 +44,8 @@ class GradientService {
     return { name }
   }
 
-  async find(page) {
-    const limit = 20
-    const offset = (page - 1) * limit
-    const gradients = await Gradient.find({})
-      .limit(limit)
-      .skip(offset)
+  async find() {
+    const gradients = await Gradient.find()
 
     return gradients
   }

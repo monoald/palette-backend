@@ -27,10 +27,10 @@ class ColorService {
   }
 
   async find(page) {
-    const limit = 20
+    const limit = 5
     const offset = (page - 1) * limit
+
     const colors = await Color.find({})
-      // .sort({ savedCount: -1 })
       .limit(limit)
       .skip(offset)
 

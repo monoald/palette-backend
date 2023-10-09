@@ -16,9 +16,7 @@ const createGradientAnimation = async (req, res, next) => {
 
 const getGradientAnimations = async (req, res, next) => {
   try {
-    const { page } = req.query
-
-    const gradientAnimations = await service.find(page)
+    const gradientAnimations = await service.find()
     res.json(gradientAnimations)
   } catch (error) {
     next(error)
