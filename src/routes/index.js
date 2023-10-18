@@ -9,6 +9,7 @@ const PublicGradientsRouter = require('./public-gradient.router')
 const gradientsRouter = require('./gradient.router')
 const gradientAnimationsRouter = require('./gradientAnimation.router')
 const iconsRouter = require('./icon.router')
+const imagesRouter = require('./image.router')
 
 function routerApi(app) {
   const router = express.Router()
@@ -24,6 +25,7 @@ function routerApi(app) {
   router.use('/gradients', gradientsRouter)
   router.use('/gradient-animations', gradientAnimationsRouter)
   router.use('/icons', iconsRouter)
+  router.use('/images', imagesRouter)
 }
 
 module.exports = routerApi
